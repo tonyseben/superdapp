@@ -1,4 +1,4 @@
-package com.example.superdapp
+package com.example.superdapp.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
