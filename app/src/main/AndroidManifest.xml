@@ -57,10 +57,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SuperDapp"
-        tools:targetApi="31"
-        tools:replace="android:dataExtractionRules">
+        tools:replace="android:dataExtractionRules"
+        tools:targetApi="31">
 
-    <activity
+        <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
@@ -70,7 +70,19 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="superdapp" />
+                <data android:host="request" />
+            </intent-filter>
+
         </activity>
+
     </application>
 
 </manifest>

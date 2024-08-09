@@ -29,11 +29,11 @@ class SuperDappApp: Application() {
         val projectId =
             "18c874cba7064d5a77f6787413a633bc" // Get Project ID at https://cloud.walletconnect.com/
         val appMetaData = Core.Model.AppMetaData(
-            name = "Kotlin.Web3Modal",
-            description = "Kotlin Web3Modal Implementation",
-            url = "kotlin.walletconnect.com",
+            name = "SuperDapp",
+            description = "SuperDapp Implementation",
+            url = "superdapp.com",
             icons = listOf("https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Gradient/Icon.png"),
-            redirect = "kotlin-web3modal://request"
+            redirect = "superdapp://request"
         )
 
         CoreClient.initialize(
@@ -146,10 +146,10 @@ class SuperDappApp: Application() {
 
     private fun createAuthParams() = Modal.Model.AuthPayloadParams(
         chains = listOf("eip155:1", "eip155:137"),
-        domain = "yourDappDomain.com",
+        domain = "superdapp.com",
         uri = "https://yourDappDomain.com/login",
         nonce = "5",
-        statement = "I accept the Terms of Service: https://yourDappDomain.com/",
+        statement = "I accept the Terms of Service: https://superdapp.com/",
         methods = listOf("personal_sign", "eth_sendTransaction"),
         resources = null // Here your dapp may request authorization with ReCaps
     )
