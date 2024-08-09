@@ -11,8 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SuperDapp"
-        tools:targetApi="31">
-        <activity
+        tools:targetApi="31"
+        tools:replace="android:dataExtractionRules">
+
+    <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"

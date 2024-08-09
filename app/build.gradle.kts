@@ -62,13 +62,16 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.navigation.compose)
 
     // Hilt DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    // ConnectWallet
+    implementation(platform(libs.walletconnect.bom))
+    implementation(libs.walletconnect.core)
+    implementation(libs.walletconnect.web3modal)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
