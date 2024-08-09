@@ -1,4 +1,5 @@
 [versions]
+accompanistNavigationMaterial = "0.34.0"
 agp = "8.4.0"
 hiltAndroidCompiler = "2.51.1"
 kotlin = "1.9.0"
@@ -8,11 +9,13 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.4"
 activityCompose = "1.9.1"
-composeBom = "2023.08.00"
+composeBom = "2024.06.00"
 navigationCompose = "2.7.7"
 walletconnectBom = "1.33.1"
+material3Android = "1.2.1"
 
 [libraries]
+accompanist-navigation-material = { module = "com.google.accompanist:accompanist-navigation-material", version.ref = "accompanistNavigationMaterial" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidCompiler" }
@@ -29,10 +32,11 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material = { group = "androidx.compose.material", name = "material" }
 walletconnect-bom = { module = "com.walletconnect:android-bom", version.ref = "walletconnectBom" }
 walletconnect-core = { module = "com.walletconnect:android-core" }
 walletconnect-web3modal = { module = "com.walletconnect:web3modal" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
