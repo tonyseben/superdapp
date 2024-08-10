@@ -4,18 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -37,17 +34,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SuperDappTheme {
-                Scaffold(
-                    topBar = {
-                        //
-                    },
-                    bottomBar = {
-                        //
-                    }
-                ) { innerPadding ->
-                    // Apply the padding globally to the whole BottomNavScreensController
-                    AppNavHost(modifier = Modifier.padding(innerPadding))
-                }
+                AppNavHost()
             }
         }
     }
@@ -56,7 +43,6 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialNavigationApi::class)
 @Composable
 fun AppNavHost(
-    modifier: Modifier = Modifier,
     startDestination: String = Destination.Connect.route,
 ) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -71,17 +57,13 @@ fun AppNavHost(
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { Text(text = "SuperDapp") },
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        null,
-                        modifier = Modifier.clickable { /*this.finish()*/ })
-                }
+                title = { Text(text = "SuperDapp") }
             )
         },
+        modifier = Modifier.systemBarsPadding()
     ) { paddingValues ->
-        ModalBottomSheetLayout(
+
+    ModalBottomSheetLayout(
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             bottomSheetNavigator = bottomSheetNavigator,
             modifier = Modifier.padding(paddingValues)

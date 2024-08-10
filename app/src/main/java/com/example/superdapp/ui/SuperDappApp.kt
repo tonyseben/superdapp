@@ -148,9 +148,9 @@ class SuperDappApp: Application() {
         chains = listOf("eip155:1", "eip155:137"),
         domain = "superdapp.com",
         uri = "https://yourDappDomain.com/login",
-        nonce = "5",
+        nonce = "7",
         statement = "I accept the Terms of Service: https://superdapp.com/",
-        methods = listOf("personal_sign", "eth_sendTransaction"),
+        methods = listOf("personal_sign"/*, "eth_sendTransaction"*/),
         resources = null // Here your dapp may request authorization with ReCaps
     )
 }
