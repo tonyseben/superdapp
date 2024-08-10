@@ -1,15 +1,22 @@
 package com.example.superdapp.ui
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.superdapp.R
 import com.walletconnect.web3.modal.client.Web3Modal
 import com.walletconnect.web3.modal.ui.components.button.AccountButton
 import com.walletconnect.web3.modal.ui.components.button.AccountButtonType
@@ -28,11 +35,20 @@ fun ConnectScreen(navController: NavController, modifier: Modifier = Modifier) {
         val address = Web3Modal.getAccount()?.address
 
         Column(
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
         ) {
+            Spacer(modifier = Modifier.height(100.dp))
+            Image(painterResource(R.drawable.ic_launcher_foreground), "content description")
+            Text(
+                text = stringResource(id = R.string.app_name),
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.height(140.dp))
+
             ConnectButton(state = web3ModalState, buttonSize = ConnectButtonSize.NORMAL)
             Spacer(modifier = Modifier.height(40.dp))
 
