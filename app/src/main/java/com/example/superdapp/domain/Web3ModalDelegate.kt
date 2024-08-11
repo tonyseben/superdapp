@@ -33,7 +33,7 @@ class Web3ModalDelegate @Inject constructor(
     private val web3ModalDelegate = object : Web3Modal.ModalDelegate {
         override fun onSessionApproved(approvedSession: Modal.Model.ApprovedSession) {
             // Triggered when receives the session approval from wallet
-            Timber.d("WalletConnect onSessionApproved")
+            Timber.d("WalletConnect onSessionApproved ${approvedSession}")
         }
 
         override fun onSessionRejected(rejectedSession: Modal.Model.RejectedSession) {

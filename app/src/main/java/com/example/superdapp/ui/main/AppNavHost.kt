@@ -17,7 +17,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.superdapp.ui.home.ConnectScreen
-import com.example.superdapp.ui.home.HomeScreen
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
@@ -26,7 +25,7 @@ import com.walletconnect.web3.modal.ui.web3ModalGraph
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialNavigationApi::class)
 @Composable
 fun AppNavHost(
-    startDestination: String = Destination.Home.route,
+    startDestination: String = Destination.Connect.route,
 ) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     val sheetState = rememberModalBottomSheetState(
@@ -53,9 +52,6 @@ fun AppNavHost(
             ) {
                 composable(Destination.Connect.route) {
                     ConnectScreen(navController = navController)
-                }
-                composable(Destination.Home.route) {
-                    HomeScreen(navController = navController)
                 }
                 web3ModalGraph(navController)
             }

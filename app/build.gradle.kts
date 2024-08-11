@@ -70,6 +70,7 @@ dependencies {
     // Hilt DI
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // ConnectWallet
     implementation(platform(libs.walletconnect.bom))
