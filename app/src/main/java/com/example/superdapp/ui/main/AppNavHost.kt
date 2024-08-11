@@ -1,9 +1,5 @@
-package com.example.superdapp.ui
+package com.example.superdapp.ui.main
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,31 +16,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.superdapp.ui.theme.SuperDappTheme
+import com.example.superdapp.ui.home.ConnectScreen
+import com.example.superdapp.ui.home.HomeScreen
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.walletconnect.web3.modal.ui.web3ModalGraph
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
-        setContent {
-            SuperDappTheme {
-                AppNavHost()
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialNavigationApi::class)
 @Composable
 fun AppNavHost(
-    startDestination: String = Destination.Connect.route,
+    startDestination: String = Destination.Home.route,
 ) {
     val scaffoldState: ScaffoldState = rememberScaffoldState()
     val sheetState = rememberModalBottomSheetState(
@@ -60,7 +42,7 @@ fun AppNavHost(
         modifier = Modifier.systemBarsPadding()
     ) { paddingValues ->
 
-    ModalBottomSheetLayout(
+        ModalBottomSheetLayout(
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             bottomSheetNavigator = bottomSheetNavigator,
             modifier = Modifier.padding(paddingValues)
@@ -71,6 +53,9 @@ fun AppNavHost(
             ) {
                 composable(Destination.Connect.route) {
                     ConnectScreen(navController = navController)
+                }
+                composable(Destination.Home.route) {
+                    HomeScreen(navController = navController)
                 }
                 web3ModalGraph(navController)
             }

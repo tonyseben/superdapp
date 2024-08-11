@@ -1,10 +1,11 @@
-package com.example.superdapp.ui
+package com.example.superdapp.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,14 +41,18 @@ fun ConnectScreen(navController: NavController, modifier: Modifier = Modifier) {
                 .fillMaxSize()
         ) {
             Spacer(modifier = Modifier.height(100.dp))
-            Image(painterResource(R.drawable.ic_launcher_foreground), "content description")
+            Image(
+                painter = painterResource(R.mipmap.ic_launcher_foreground),
+                contentDescription = "content description",
+                modifier = Modifier.size(200.dp)
+            )
             Text(
                 text = stringResource(id = R.string.app_name),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
-            Spacer(modifier = Modifier.height(140.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             ConnectButton(state = web3ModalState, buttonSize = ConnectButtonSize.NORMAL)
             Spacer(modifier = Modifier.height(40.dp))
@@ -57,5 +62,4 @@ fun ConnectScreen(navController: NavController, modifier: Modifier = Modifier) {
             AccountButton(web3ModalState, AccountButtonType.NORMAL)
         }
     }
-
 }
