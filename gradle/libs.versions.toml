@@ -38,6 +38,7 @@ androidx-material = { group = "androidx.compose.material", name = "material" }
 walletconnect-bom = { module = "com.walletconnect:android-bom", version.ref = "walletconnectBom" }
 walletconnect-core = { module = "com.walletconnect:android-core" }
 walletconnect-web3modal = { module = "com.walletconnect:web3modal" }
+walletconnect-sign = { module = "com.walletconnect:sign" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 
 [plugins]

@@ -1,5 +1,6 @@
 package com.example.superdapp.ui.home
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,33 +11,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.superdapp.R
-import com.walletconnect.web3.modal.client.Web3Modal
-import com.walletconnect.web3.modal.ui.components.button.AccountButton
-import com.walletconnect.web3.modal.ui.components.button.AccountButtonType
-import com.walletconnect.web3.modal.ui.components.button.ConnectButton
-import com.walletconnect.web3.modal.ui.components.button.ConnectButtonSize
-import com.walletconnect.web3.modal.ui.components.button.NetworkButton
-import com.walletconnect.web3.modal.ui.components.button.rememberWeb3ModalState
 
 @Composable
-fun ConnectScreen(navController: NavController, modifier: Modifier = Modifier) {
-
-    val web3ModalState = rememberWeb3ModalState(navController = navController)
-    val address = Web3Modal.getAccount()?.address
-
-    val isConnected by web3ModalState.isConnected.collectAsState()
+fun ConnectScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: ConnectViewModel = hiltViewModel()
+) {
+    val context = LocalContext.current
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -58,23 +52,13 @@ fun ConnectScreen(navController: NavController, modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(40.dp))
 
-        if (!isConnected) {
-            ConnectButton(state = web3ModalState, buttonSize = ConnectButtonSize.NORMAL)
-        } else {
-            NetworkButton(state = web3ModalState)
-            Spacer(modifier = Modifier.height(10.dp))
-            AccountButton(web3ModalState, AccountButtonType.NORMAL)
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(text = "Address: $address")
-            Spacer(modifier = Modifier.height(40.dp))
-            Button(onClick = {
-                Web3Modal.disconnect(
-                    onSuccess = {},
-                    onError = { error: Throwable -> }
-                )
-            }) {
-                Text(text = "Disconnect")
+        Button(onClick = {
+            viewModel.connectWallet()?.let { uri ->
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                context.startActivity(intent)
             }
+        }) {
+            Text(text = "Connect Wallet")
         }
     }
 }

@@ -76,6 +76,7 @@ dependencies {
     implementation(platform(libs.walletconnect.bom))
     implementation(libs.walletconnect.core)
     implementation(libs.walletconnect.web3modal)
+    implementation(libs.walletconnect.sign)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
