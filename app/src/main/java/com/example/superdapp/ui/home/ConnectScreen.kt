@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -28,22 +29,20 @@ import com.walletconnect.web3.modal.ui.components.button.ConnectButton
 import com.walletconnect.web3.modal.ui.components.button.ConnectButtonSize
 import com.walletconnect.web3.modal.ui.components.button.NetworkButton
 import com.walletconnect.web3.modal.ui.components.button.rememberWeb3ModalState
-import timber.log.Timber
 
 @Composable
 fun ConnectScreen(navController: NavController, modifier: Modifier = Modifier) {
 
     val web3ModalState = rememberWeb3ModalState(navController = navController)
     val address = Web3Modal.getAccount()?.address
-    val isConnected by web3ModalState.isConnected.collectAsState()
 
-    Timber.d("address: $address")
-    Timber.d("isConnected: $isConnected")
+    val isConnected by web3ModalState.isConnected.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .padding(16.dp, 8.dp)
     ) {
         Spacer(modifier = Modifier.height(100.dp))
         Image(
@@ -65,6 +64,8 @@ fun ConnectScreen(navController: NavController, modifier: Modifier = Modifier) {
             NetworkButton(state = web3ModalState)
             Spacer(modifier = Modifier.height(10.dp))
             AccountButton(web3ModalState, AccountButtonType.NORMAL)
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = "Address: $address")
             Spacer(modifier = Modifier.height(40.dp))
             Button(onClick = {
                 Web3Modal.disconnect(
