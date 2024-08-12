@@ -1,4 +1,4 @@
-package com.example.superdapp.domain
+package com.example.superdapp.domain.walletconnect
 
 sealed class SignStatus {
     data object Default : SignStatus()

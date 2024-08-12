@@ -29,9 +29,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.superdapp.R
-import com.example.superdapp.domain.ConnectStatus
-import com.example.superdapp.domain.DisconnectStatus
-import com.example.superdapp.domain.SignStatus
+import com.example.superdapp.domain.walletconnect.ConnectStatus
+import com.example.superdapp.domain.walletconnect.DisconnectStatus
+import com.example.superdapp.domain.walletconnect.SignStatus
 import timber.log.Timber
 
 @Composable

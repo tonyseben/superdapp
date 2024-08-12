@@ -1,4 +1,4 @@
-package com.example.superdapp.domain
+package com.example.superdapp.domain.walletconnect
 
 import android.net.Uri
 import androidx.core.net.toUri

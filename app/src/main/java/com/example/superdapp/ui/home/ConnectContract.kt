@@ -1,9 +1,9 @@
 package com.example.superdapp.ui.home
 
 import android.net.Uri
-import com.example.superdapp.domain.ConnectStatus
-import com.example.superdapp.domain.DisconnectStatus
-import com.example.superdapp.domain.SignStatus
+import com.example.superdapp.domain.walletconnect.ConnectStatus
+import com.example.superdapp.domain.walletconnect.DisconnectStatus
+import com.example.superdapp.domain.walletconnect.SignStatus
 import com.example.superdapp.ui.main.UiEvent
 import com.example.superdapp.ui.main.UiSideEffect
 import com.example.superdapp.ui.main.UiState

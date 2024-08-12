@@ -1,18 +1,18 @@
 package com.example.superdapp.ui.home
 
 import androidx.lifecycle.viewModelScope
-import com.example.superdapp.domain.ConnectStatus
-import com.example.superdapp.domain.ConnectWalletUseCase
-import com.example.superdapp.domain.CreatePairingUseCase
-import com.example.superdapp.domain.DisconnectStatus
-import com.example.superdapp.domain.DisconnectWalletUseCase
-import com.example.superdapp.domain.SessionStatus
-import com.example.superdapp.domain.SignClientDelegate
-import com.example.superdapp.domain.SignMessageUseCase
-import com.example.superdapp.domain.SignStatus
 import com.example.superdapp.domain.session.ClearSessionUseCase
 import com.example.superdapp.domain.session.GetSessionUseCase
 import com.example.superdapp.domain.session.SaveSessionUseCase
+import com.example.superdapp.domain.walletconnect.ConnectStatus
+import com.example.superdapp.domain.walletconnect.ConnectWalletUseCase
+import com.example.superdapp.domain.walletconnect.CreatePairingUseCase
+import com.example.superdapp.domain.walletconnect.DisconnectStatus
+import com.example.superdapp.domain.walletconnect.DisconnectWalletUseCase
+import com.example.superdapp.domain.walletconnect.SessionStatus
+import com.example.superdapp.domain.walletconnect.SignClientDelegate
+import com.example.superdapp.domain.walletconnect.SignMessageUseCase
+import com.example.superdapp.domain.walletconnect.SignStatus
 import com.example.superdapp.ui.main.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

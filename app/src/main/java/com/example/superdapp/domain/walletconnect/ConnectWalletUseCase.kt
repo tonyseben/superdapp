@@ -1,4 +1,4 @@
-package com.example.superdapp.domain
+package com.example.superdapp.domain.walletconnect
 
 import com.walletconnect.android.Core
 import com.walletconnect.sign.client.Sign
