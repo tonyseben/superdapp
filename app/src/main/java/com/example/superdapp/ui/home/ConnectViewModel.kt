@@ -10,6 +10,9 @@ import com.example.superdapp.domain.SessionStatus
 import com.example.superdapp.domain.SignClientDelegate
 import com.example.superdapp.domain.SignMessageUseCase
 import com.example.superdapp.domain.SignStatus
+import com.example.superdapp.domain.session.ClearSessionUseCase
+import com.example.superdapp.domain.session.GetSessionUseCase
+import com.example.superdapp.domain.session.SaveSessionUseCase
 import com.example.superdapp.ui.main.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -22,12 +25,27 @@ class ConnectViewModel @Inject constructor(
     private val signClientDelegate: SignClientDelegate,
     private val connectWallet: ConnectWalletUseCase,
     private val signMessage: SignMessageUseCase,
-    private val disconnectWallet: DisconnectWalletUseCase
+    private val disconnectWallet: DisconnectWalletUseCase,
+    private val getSessionLocal: GetSessionUseCase,
+    private val saveSessionLocal: SaveSessionUseCase,
+    private val clearSessionLocal: ClearSessionUseCase
 ) : BaseViewModel<ConnectContract.State, ConnectContract.Event, ConnectContract.SideEffect>(
     ConnectContract.State()
 ) {
 
     fun init() = viewModelScope.launch {
+        getSessionLocal()?.let { session ->
+            setState {
+                copy(
+                    accounts = session.namespaces["eip155"]?.accounts.orEmpty(),
+                    sessionTopic = session.topic,
+                    connectedWallet = session.metaData?.name,
+                    connectStatus = ConnectStatus.Connected,
+                    signStatus = SignStatus.Signed
+                )
+            }
+        }
+
         setState {
             val pairing = createPairing()
             copy(
@@ -52,6 +70,7 @@ class ConnectViewModel @Inject constructor(
                 }
 
                 is SessionStatus.OnSessionRequestResponse -> {
+                    state.value.sessionTopic?.let { topic -> saveSessionLocal(topic) }
                     setState { copy(signStatus = SignStatus.Signed) }
                 }
 
@@ -92,6 +111,7 @@ class ConnectViewModel @Inject constructor(
 
         disconnectWallet(topic).collect {
             setState { copy(disConnectStatus = it) }
+            clearSessionLocal()
 
             if (it is DisconnectStatus.Disconnected) {
                 delay(1000)

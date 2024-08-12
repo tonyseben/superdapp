@@ -24,8 +24,8 @@ class SignMessageUseCase @Inject constructor() {
                 (System.currentTimeMillis() / 1000) + TimeUnit.SECONDS.convert(7, TimeUnit.DAYS)
 
             val requestParams = Sign.Params.Request(sessionTopic, method, params, chainId, expiry)
-            val activeConnection = checkNotNull(SignClient.getActiveSessionByTopic(sessionTopic))
-            Timber.d("WalletConnect Connection is active", activeConnection.toString())
+            val activeSession = checkNotNull(SignClient.getActiveSessionByTopic(sessionTopic))
+            Timber.d("WalletConnect Connection is active: $activeSession")
 
             SignClient.request(requestParams,
                 onSuccess = { request: Sign.Model.SentRequest ->
