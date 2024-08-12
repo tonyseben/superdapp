@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.superdapp.R
 import com.example.superdapp.domain.ConnectStatus
+import com.example.superdapp.domain.DisconnectStatus
 import com.example.superdapp.domain.SignStatus
 import timber.log.Timber
 
@@ -74,45 +75,14 @@ fun ConnectScreen(
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-        Button(
-            onClick = {
-                viewModel.setEvent(ConnectContract.Event.OnConnectClick)
-            },
-            enabled = when (state.connectStatus) {
-                is ConnectStatus.Disconnected,
-                is ConnectStatus.Error -> true
-
-                else -> false
-            },
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Blue,
-                contentColor = Color.White,
-                disabledBackgroundColor = contentColor.copy(alpha = ContentAlpha.disabled),
-                disabledContentColor = contentColor.copy(alpha = ContentAlpha.disabled),
-            ),
-            modifier = Modifier.size(width = 200.dp, height = 42.dp)
-        ) {
-            Text(
-                text = when (state.connectStatus) {
-                    is ConnectStatus.Disconnected -> "Connect Wallet"
-                    is ConnectStatus.ConnectRequested -> "Awaiting wallet"
-                    ConnectStatus.Connecting -> "Connecting ..."
-                    is ConnectStatus.Connected -> "Connected"
-                    is ConnectStatus.Error -> "Connect Wallet"
-                },
-                fontSize = 16.sp
-            )
-        }
-
-        if (state.connectStatus is ConnectStatus.Connected) {
-            Spacer(modifier = Modifier.height(10.dp))
+        if (state.signStatus !is SignStatus.Signed) {
             Button(
                 onClick = {
-                    viewModel.setEvent(ConnectContract.Event.OnSignClick)
+                    viewModel.setEvent(ConnectContract.Event.OnConnectClick)
                 },
-                enabled = when (state.signStatus) {
-                    is SignStatus.Unsigned,
-                    is SignStatus.Error -> true
+                enabled = when (state.connectStatus) {
+                    is ConnectStatus.Default,
+                    is ConnectStatus.Error -> true
 
                     else -> false
                 },
@@ -125,16 +95,94 @@ fun ConnectScreen(
                 modifier = Modifier.size(width = 200.dp, height = 42.dp)
             ) {
                 Text(
-                    text = when (state.signStatus) {
-                        SignStatus.Unsigned -> "Sign Message"
-                        SignStatus.Signing -> "Signing ..."
-                        SignStatus.SignRequested -> "Awaiting wallet"
-                        SignStatus.Signed -> "Signed"
-                        is SignStatus.Error -> "Sign Message"
+                    text = when (state.connectStatus) {
+                        is ConnectStatus.Default -> "Connect Wallet"
+                        is ConnectStatus.ConnectRequested -> "Awaiting wallet"
+                        ConnectStatus.Connecting -> "Connecting ..."
+                        is ConnectStatus.Connected -> "Connected"
+                        is ConnectStatus.Error -> "Connect Wallet"
                     },
                     fontSize = 16.sp
                 )
             }
+
+            if (state.connectStatus is ConnectStatus.Connected) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(
+                    onClick = {
+                        viewModel.setEvent(ConnectContract.Event.OnSignClick)
+                    },
+                    enabled = when (state.signStatus) {
+                        is SignStatus.Default,
+                        is SignStatus.Error -> true
+
+                        else -> false
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Blue,
+                        contentColor = Color.White,
+                        disabledBackgroundColor = contentColor.copy(alpha = ContentAlpha.disabled),
+                        disabledContentColor = contentColor.copy(alpha = ContentAlpha.disabled),
+                    ),
+                    modifier = Modifier.size(width = 200.dp, height = 42.dp)
+                ) {
+                    Text(
+                        text = when (state.signStatus) {
+                            SignStatus.Default -> "Sign Message"
+                            SignStatus.Signing -> "Signing ..."
+                            SignStatus.SignRequested -> "Awaiting wallet"
+                            SignStatus.Signed -> "Signed"
+                            is SignStatus.Error -> "Sign Message"
+                        },
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        } else {
+            Text(
+                text = "Connected to ${state.connectedWallet}, Signed",
+                color = Color.LightGray
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+            Button(
+                onClick = {
+                    viewModel.setEvent(ConnectContract.Event.OnDisconnectClick)
+                },
+                enabled = when (state.disConnectStatus) {
+                    is DisconnectStatus.Default,
+                    is DisconnectStatus.Error -> true
+
+                    else -> false
+                },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.Blue,
+                    contentColor = Color.White,
+                    disabledBackgroundColor = contentColor.copy(alpha = ContentAlpha.disabled),
+                    disabledContentColor = contentColor.copy(alpha = ContentAlpha.disabled),
+                ),
+                modifier = Modifier.size(width = 200.dp, height = 42.dp)
+            ) {
+                Text(
+                    text = when (state.disConnectStatus) {
+                        DisconnectStatus.Default -> "Disconnect Wallet"
+                        DisconnectStatus.Disconnected -> "Disconnected"
+                        is DisconnectStatus.Error -> "Disconnect Wallet"
+                    },
+                    fontSize = 16.sp
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+
+            var accounts = "Account(s):\n"
+            for (acc in state.accounts) {
+                accounts += "\n\u2022 $acc"
+            }
+            Text(
+                text = accounts,
+                color = Color.White,
+                fontSize = 14.sp
+            )
         }
     }
 }

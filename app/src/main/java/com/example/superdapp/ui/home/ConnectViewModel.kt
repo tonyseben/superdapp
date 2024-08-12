@@ -4,12 +4,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.superdapp.domain.ConnectStatus
 import com.example.superdapp.domain.ConnectWalletUseCase
 import com.example.superdapp.domain.CreatePairingUseCase
+import com.example.superdapp.domain.DisconnectStatus
+import com.example.superdapp.domain.DisconnectWalletUseCase
 import com.example.superdapp.domain.SessionStatus
 import com.example.superdapp.domain.SignClientDelegate
 import com.example.superdapp.domain.SignMessageUseCase
 import com.example.superdapp.domain.SignStatus
 import com.example.superdapp.ui.main.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,7 +21,8 @@ class ConnectViewModel @Inject constructor(
     private val createPairing: CreatePairingUseCase,
     private val signClientDelegate: SignClientDelegate,
     private val connectWallet: ConnectWalletUseCase,
-    private val signMessage: SignMessageUseCase
+    private val signMessage: SignMessageUseCase,
+    private val disconnectWallet: DisconnectWalletUseCase
 ) : BaseViewModel<ConnectContract.State, ConnectContract.Event, ConnectContract.SideEffect>(
     ConnectContract.State()
 ) {
@@ -32,14 +36,18 @@ class ConnectViewModel @Inject constructor(
             )
         }
 
-        signClientDelegate().collect {
+        signClientDelegate().collect { it ->
             when (it) {
                 is SessionStatus.OnApproved -> {
-                    setState {
-                        copy(
-                            approvedSession = it.approvedSession,
-                            connectStatus = ConnectStatus.Connected
-                        )
+                    it.approvedSession.let { session ->
+                        setState {
+                            copy(
+                                accounts = session.accounts,
+                                sessionTopic = session.topic,
+                                connectedWallet = session.metaData?.name,
+                                connectStatus = ConnectStatus.Connected
+                            )
+                        }
                     }
                 }
 
@@ -58,6 +66,7 @@ class ConnectViewModel @Inject constructor(
         when (event) {
             is ConnectContract.Event.OnConnectClick -> onConnectWalletClick()
             is ConnectContract.Event.OnSignClick -> onSignMessageClick()
+            is ConnectContract.Event.OnDisconnectClick -> onDisconnectWalletClick()
         }
     }
 
@@ -70,11 +79,30 @@ class ConnectViewModel @Inject constructor(
     }
 
     private fun onSignMessageClick() = viewModelScope.launch {
-        val session = state.value.approvedSession ?: return@launch
+        val account = state.value.accounts.firstOrNull() ?: return@launch
+        val topic = state.value.sessionTopic ?: return@launch
 
-        signMessage(session).collect {
+        signMessage(account, topic).collect {
             setState { copy(signStatus = it) }
         }
     }
 
+    private fun onDisconnectWalletClick() = viewModelScope.launch {
+        val topic = state.value.sessionTopic ?: return@launch
+
+        disconnectWallet(topic).collect {
+            setState { copy(disConnectStatus = it) }
+
+            if (it is DisconnectStatus.Disconnected) {
+                delay(1000)
+                setState {
+                    copy(
+                        connectStatus = ConnectStatus.Default,
+                        signStatus = SignStatus.Default,
+                        disConnectStatus = DisconnectStatus.Default
+                    )
+                }
+            }
+        }
+    }
 }

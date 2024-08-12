@@ -11,15 +11,13 @@ import javax.inject.Inject
 
 class SignMessageUseCase @Inject constructor() {
 
-    operator fun invoke(approvedSession: Sign.Model.ApprovedSession): Flow<SignStatus> =
+    operator fun invoke(account: String, sessionTopic: String): Flow<SignStatus> =
         callbackFlow {
             trySend(SignStatus.Signing)
 
             val chainId = "eip155:1"
-            val sessionTopic = approvedSession.topic
             val method = "personal_sign"
 
-            val account = approvedSession.accounts[0]
             val params = getPersonalSignBody(account)
 
             val expiry =

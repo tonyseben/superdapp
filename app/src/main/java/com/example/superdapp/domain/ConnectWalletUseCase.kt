@@ -40,7 +40,7 @@ class ConnectWalletUseCase @Inject constructor() {
                 trySend(ConnectStatus.ConnectRequested(pairingUrl))
             },
             onError = { error ->
-                Timber.d("WalletConnect SignClient.authenticate error: $error")
+                Timber.d("WalletConnect SignClient.connect error: $error")
                 trySend(ConnectStatus.Error(error.toString()))
             }
         )
