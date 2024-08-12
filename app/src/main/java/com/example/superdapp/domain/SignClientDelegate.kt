@@ -16,7 +16,7 @@ class SignClientDelegate @Inject constructor() {
 
             override fun onSessionApproved(approvedSession: Sign.Model.ApprovedSession) {
                 // Triggered when Dapp receives the session approval from wallet
-                Timber.d("WalletConnect onSessionApproved ${approvedSession}")
+                Timber.d("WalletConnect onSessionApproved $approvedSession")
                 trySend(SessionStatus.OnApproved(approvedSession))
             }
 
@@ -42,12 +42,13 @@ class SignClientDelegate @Inject constructor() {
 
             override fun onSessionDelete(deletedSession: Sign.Model.DeletedSession) {
                 // Triggered when Dapp receives the session delete from wallet
-                Timber.d("WalletConnect onSessionDelete")
+                Timber.d("WalletConnect onSessionDelete $deletedSession")
             }
 
             override fun onSessionRequestResponse(response: Sign.Model.SessionRequestResponse) {
                 // Triggered when Dapp receives the session request response from wallet
-                Timber.d("WalletConnect onSessionRequestResponse")
+                Timber.d("WalletConnect onSessionRequestResponse $response")
+                trySend(SessionStatus.OnSessionRequestResponse(response))
             }
 
             override fun onProposalExpired(proposal: Sign.Model.ExpiredProposal) {

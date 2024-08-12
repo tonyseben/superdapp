@@ -1,5 +1,6 @@
 package com.example.superdapp.domain
 
+import com.walletconnect.android.Core
 import com.walletconnect.sign.client.Sign
 import com.walletconnect.sign.client.SignClient
 import kotlinx.coroutines.channels.awaitClose
@@ -8,11 +9,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
 
-class ConnectWalletUseCase @Inject constructor(
-    private val createPairing: CreatePairingUseCase
-) {
+class ConnectWalletUseCase @Inject constructor() {
 
-    operator fun invoke(): Flow<ConnectStatus> = callbackFlow {
+    operator fun invoke(pairing: Core.Model.Pairing): Flow<ConnectStatus> = callbackFlow {
         trySend(ConnectStatus.Connecting)
 
         val chains = listOf("eip155:1", "eip155:137")
@@ -31,7 +30,7 @@ class ConnectWalletUseCase @Inject constructor(
             namespaces = namespaces,
             optionalNamespaces = null,
             properties = null,
-            pairing = createPairing()
+            pairing = pairing
         )
 
         SignClient.connect(
