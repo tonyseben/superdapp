@@ -4,9 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +35,7 @@ import com.example.superdapp.R
 import com.example.superdapp.domain.walletconnect.ConnectStatus
 import com.example.superdapp.domain.walletconnect.DisconnectStatus
 import com.example.superdapp.domain.walletconnect.SignStatus
+import com.example.superdapp.ui.utils.NetworkUtils
 import com.lightspark.composeqr.QrCodeView
 
 @Composable
@@ -52,12 +55,29 @@ fun ConnectScreen(
         mutableIntStateOf(0)
     }
 
+    val isConnected by NetworkUtils.observeConnection(context).collectAsState(true)
+    if (!isConnected) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(32.dp)
+                .background(Color(0xFFFF4848)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Not connected to internet!",
+                color = Color.White
+            )
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp, 8.dp)
     ) {
+
         Spacer(modifier = Modifier.height(50.dp))
         Image(
             painter = painterResource(R.mipmap.ic_launcher_foreground),
@@ -88,7 +108,7 @@ fun ConnectScreen(
 
                     else -> false
                 },
-                onClick = { viewModel.setEvent(ConnectContract.Event.OnConnectClick) })
+                onClick = { if (isConnected) viewModel.setEvent(ConnectContract.Event.OnConnectClick) })
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -146,7 +166,7 @@ fun ConnectScreen(
 
                             else -> false
                         },
-                        onClick = { viewModel.setEvent(ConnectContract.Event.OnSignClick) })
+                        onClick = { if (isConnected) viewModel.setEvent(ConnectContract.Event.OnSignClick) })
 
                     if (state.signStatus is SignStatus.SignRequested && tabSelected == 1) {
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.pairingUrl))
@@ -175,7 +195,7 @@ fun ConnectScreen(
 
                     else -> false
                 },
-                onClick = { viewModel.setEvent(ConnectContract.Event.OnDisconnectClick) })
+                onClick = { if (isConnected) viewModel.setEvent(ConnectContract.Event.OnDisconnectClick) })
 
             Spacer(modifier = Modifier.height(20.dp))
 
