@@ -6,12 +6,10 @@ import com.example.superdapp.domain.walletconnect.SignStatus
 import com.example.superdapp.ui.main.UiEvent
 import com.example.superdapp.ui.main.UiSideEffect
 import com.example.superdapp.ui.main.UiState
-import com.walletconnect.android.Core
 
 class ConnectContract {
 
     data class State(
-        val pairing: Core.Model.Pairing? = null,
         val pairingUrl: String? = null,
         val connectedWallet: String? = null,
         val sessionTopic: String? = null,

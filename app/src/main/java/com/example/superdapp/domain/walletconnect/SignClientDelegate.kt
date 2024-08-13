@@ -23,6 +23,7 @@ class SignClientDelegate @Inject constructor() {
             override fun onSessionRejected(rejectedSession: Sign.Model.RejectedSession) {
                 // Triggered when Dapp receives the session rejection from wallet
                 Timber.d("WalletConnect onSessionRejected")
+                trySend(SessionStatus.OnReject(rejectedSession))
             }
 
             override fun onSessionUpdate(updatedSession: Sign.Model.UpdatedSession) {

@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.first
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,7 +19,6 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun saveSession(sessionTopic: String) {
         dataStore.edit { preferences ->
-            Timber.d(">>>>>> saveSession  $sessionTopic")
             preferences[SESSION_TOPIC_KEY] = sessionTopic
         }
     }

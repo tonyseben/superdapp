@@ -14,6 +14,7 @@ import com.example.superdapp.domain.walletconnect.SignClientDelegate
 import com.example.superdapp.domain.walletconnect.SignMessageUseCase
 import com.example.superdapp.domain.walletconnect.SignStatus
 import com.example.superdapp.ui.main.BaseViewModel
+import com.walletconnect.sign.client.Sign
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,7 +45,7 @@ class ConnectViewModel @Inject constructor(
                     signStatus = SignStatus.Signed
                 )
             }
-        } ?: setState { copy(pairing = createPairing()) }
+        }
 
         signClientDelegate().collect { it ->
             when (it) {
@@ -61,9 +62,28 @@ class ConnectViewModel @Inject constructor(
                     }
                 }
 
+                is SessionStatus.OnReject -> reset()
+
                 is SessionStatus.OnSessionRequestResponse -> {
-                    state.value.sessionTopic?.let { topic -> saveSessionLocal(topic) }
-                    setState { copy(signStatus = SignStatus.Signed) }
+                    when (it.response.result) {
+                        is Sign.Model.JsonRpcResponse.JsonRpcResult -> {
+                            if (it.response.topic == state.value.sessionTopic) {
+                                saveSessionLocal(it.response.topic)
+                                setState { copy(signStatus = SignStatus.Signed) }
+                            } else {
+                                handleError("Sign message failed. Invalid sign due to topic mismatch.")
+                                setState { copy(signStatus = SignStatus.Default) }
+                            }
+                        }
+
+                        is Sign.Model.JsonRpcResponse.JsonRpcError -> {
+                            val error =
+                                (it.response.result as Sign.Model.JsonRpcResponse.JsonRpcError).message
+                            handleError("Sign message failed. $error")
+                            setState { copy(signStatus = SignStatus.Default) }
+                        }
+                    }
+
                 }
 
                 is SessionStatus.Error -> {
@@ -83,26 +103,24 @@ class ConnectViewModel @Inject constructor(
     }
 
     private fun onConnectWalletClick() = viewModelScope.launch {
-        state.value.pairing?.let { pairing ->
-
-            connectWallet(pairing).collect { status ->
-                setState { copy(connectStatus = status) }
-                when (status) {
-                    is ConnectStatus.ConnectRequested -> setState { copy(pairingUrl = status.pairingUrl) }
-                    is ConnectStatus.Error -> handleError(status.message, status.throwable)
-                    else -> {}
-                }
+        val pairing = createPairing()
+        connectWallet(pairing).collect { status ->
+            setState { copy(connectStatus = status) }
+            when (status) {
+                is ConnectStatus.ConnectRequested -> setState { copy(pairingUrl = status.pairingUrl) }
+                is ConnectStatus.Error -> handleError(status.message, status.throwable)
+                else -> {}
             }
         }
     }
 
     private fun onSignMessageClick() = viewModelScope.launch {
         val account = state.value.accounts.firstOrNull() ?: run {
-            handleError("Could not sign message. No account found!", null)
+            handleError("Could not sign message. No account found!")
             return@launch
         }
         val topic = state.value.sessionTopic ?: run {
-            handleError("Could not sign message. No session topic found!", null)
+            handleError("Could not sign message. No session topic found!")
             return@launch
         }
 
@@ -116,7 +134,7 @@ class ConnectViewModel @Inject constructor(
 
     private fun onDisconnectWalletClick() = viewModelScope.launch {
         val topic = state.value.sessionTopic ?: run {
-            handleError("Could not disconnect wallet. No session topic found!", null)
+            handleError("Could not disconnect wallet. No session topic found!")
             return@launch
         }
 
@@ -143,7 +161,6 @@ class ConnectViewModel @Inject constructor(
         delay(1000)
         setState {
             copy(
-                pairing = null,
                 pairingUrl = null,
                 connectedWallet = null,
                 sessionTopic = null,
@@ -153,10 +170,9 @@ class ConnectViewModel @Inject constructor(
                 disConnectStatus = DisconnectStatus.Default
             )
         }
-        init()
     }
 
-    private fun handleError(message: String?, throwable: Throwable?) {
+    private fun handleError(message: String?, throwable: Throwable? = null) {
         throwable?.printStackTrace()
         applySideEffect(
             ConnectContract.SideEffect.ShowError(
