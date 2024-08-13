@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -78,11 +80,11 @@ fun ConnectScreen(
             .padding(16.dp, 8.dp)
     ) {
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Image(
             painter = painterResource(R.mipmap.ic_launcher_foreground),
             contentDescription = "content description",
-            modifier = Modifier.size(200.dp)
+            modifier = Modifier.size(170.dp)
         )
         Text(
             text = stringResource(id = R.string.app_name),
@@ -108,7 +110,7 @@ fun ConnectScreen(
 
                     else -> false
                 },
-                onClick = { if (isConnected) viewModel.setEvent(ConnectContract.Event.OnConnectClick) })
+                onClick = { viewModel.setEvent(ConnectContract.Event.OnConnectClick) })
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -166,12 +168,26 @@ fun ConnectScreen(
 
                             else -> false
                         },
-                        onClick = { if (isConnected) viewModel.setEvent(ConnectContract.Event.OnSignClick) })
+                        onClick = { viewModel.setEvent(ConnectContract.Event.OnSignClick) })
 
                     if (state.signStatus is SignStatus.SignRequested && tabSelected == 1) {
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.pairingUrl))
                         context.startActivity(intent)
                     }
+                }
+            }
+
+            if (state.connectStatus !is ConnectStatus.Default) {
+                Spacer(modifier = Modifier.height(10.dp))
+                IconButton(
+                    onClick = { viewModel.setEvent(ConnectContract.Event.OnCancelClick) }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_cancel),
+                        contentDescription = "Cancel",
+                        tint = Color.Blue,
+                        modifier = Modifier.size(32.dp)
+                    )
                 }
             }
 
@@ -195,7 +211,7 @@ fun ConnectScreen(
 
                     else -> false
                 },
-                onClick = { if (isConnected) viewModel.setEvent(ConnectContract.Event.OnDisconnectClick) })
+                onClick = { viewModel.setEvent(ConnectContract.Event.OnDisconnectClick) })
 
             Spacer(modifier = Modifier.height(20.dp))
 

@@ -26,6 +26,7 @@ class ConnectContract {
         data object OnConnectClick : Event()
         data object OnSignClick : Event()
         data object OnDisconnectClick : Event()
+        data object OnCancelClick : Event()
     }
 
     sealed class SideEffect : UiSideEffect {

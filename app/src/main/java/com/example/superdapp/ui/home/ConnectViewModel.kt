@@ -78,6 +78,7 @@ class ConnectViewModel @Inject constructor(
             is ConnectContract.Event.OnConnectClick -> onConnectWalletClick()
             is ConnectContract.Event.OnSignClick -> onSignMessageClick()
             is ConnectContract.Event.OnDisconnectClick -> onDisconnectWalletClick()
+            ConnectContract.Event.OnCancelClick -> onCancelClick()
         }
     }
 
@@ -124,27 +125,35 @@ class ConnectViewModel @Inject constructor(
                 DisconnectStatus.Default -> setState { copy(disConnectStatus = status) }
                 DisconnectStatus.Disconnected -> {
                     setState { copy(disConnectStatus = status) }
-                    clearSessionLocal()
-
-                    delay(1000)
-                    setState {
-                        copy(
-                            pairing = null,
-                            pairingUrl = null,
-                            connectedWallet = null,
-                            sessionTopic = null,
-                            accounts = emptyList(),
-                            connectStatus = ConnectStatus.Default,
-                            signStatus = SignStatus.Default,
-                            disConnectStatus = DisconnectStatus.Default
-                        )
-                    }
-                    init()
+                    reset()
                 }
 
                 is DisconnectStatus.Error -> handleError(status.message, status.throwable)
             }
         }
+    }
+
+    private fun onCancelClick() = viewModelScope.launch {
+        reset()
+    }
+
+    private fun reset() = viewModelScope.launch {
+        clearSessionLocal()
+
+        delay(1000)
+        setState {
+            copy(
+                pairing = null,
+                pairingUrl = null,
+                connectedWallet = null,
+                sessionTopic = null,
+                accounts = emptyList(),
+                connectStatus = ConnectStatus.Default,
+                signStatus = SignStatus.Default,
+                disConnectStatus = DisconnectStatus.Default
+            )
+        }
+        init()
     }
 
     private fun handleError(message: String?, throwable: Throwable?) {
