@@ -44,8 +44,7 @@ class ConnectViewModel @Inject constructor(
                     signStatus = SignStatus.Signed
                 )
             }
-        }
-
+        } ?:
         setState { copy(pairing = createPairing()) }
 
         signClientDelegate().collect { it ->
@@ -114,11 +113,17 @@ class ConnectViewModel @Inject constructor(
                 delay(1000)
                 setState {
                     copy(
+                        pairing = null,
+                        pairingUrl = null,
+                        connectedWallet = null,
+                        sessionTopic = null,
+                        accounts = emptyList(),
                         connectStatus = ConnectStatus.Default,
                         signStatus = SignStatus.Default,
                         disConnectStatus = DisconnectStatus.Default
                     )
                 }
+                init()
             }
         }
     }
