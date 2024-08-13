@@ -46,13 +46,7 @@ class ConnectViewModel @Inject constructor(
             }
         }
 
-        setState {
-            val pairing = createPairing()
-            copy(
-                pairing = pairing,
-                pairingUri = createPairing.getUri(pairing)
-            )
-        }
+        setState { copy(pairing = createPairing()) }
 
         signClientDelegate().collect { it ->
             when (it) {
@@ -93,6 +87,9 @@ class ConnectViewModel @Inject constructor(
         state.value.pairing?.let {
             connectWallet(it).collect {
                 setState { copy(connectStatus = it) }
+                if (it is ConnectStatus.ConnectRequested) {
+                    setState { copy(pairingUrl = it.pairingUrl) }
+                }
             }
         }
     }

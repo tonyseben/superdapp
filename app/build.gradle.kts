@@ -67,6 +67,7 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
 
+    // DataStore
     implementation(libs.androidx.datastore.preferences)
 
     // Hilt DI
@@ -79,6 +80,9 @@ dependencies {
     implementation(libs.walletconnect.core)
     implementation(libs.walletconnect.web3modal)
     implementation(libs.walletconnect.sign)
+
+    // QR Code
+    implementation(libs.compose.qr.code)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

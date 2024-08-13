@@ -1,6 +1,5 @@
 package com.example.superdapp.ui.home
 
-import android.net.Uri
 import com.example.superdapp.domain.walletconnect.ConnectStatus
 import com.example.superdapp.domain.walletconnect.DisconnectStatus
 import com.example.superdapp.domain.walletconnect.SignStatus
@@ -13,7 +12,7 @@ class ConnectContract {
 
     data class State(
         val pairing: Core.Model.Pairing? = null,
-        val pairingUri: Uri? = null,
+        val pairingUrl: String? = null,
         val connectedWallet: String? = null,
         val sessionTopic: String? = null,
         val accounts: List<String> = emptyList(),
