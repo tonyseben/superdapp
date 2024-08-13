@@ -5,5 +5,5 @@ sealed class ConnectStatus {
     data object Connecting : ConnectStatus()
     data class ConnectRequested(val pairingUrl: String) : ConnectStatus()
     data object Connected : ConnectStatus()
-    data class Error(val message: String) : ConnectStatus()
+    data class Error(val message: String, val throwable: Throwable) : ConnectStatus()
 }

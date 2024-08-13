@@ -34,7 +34,12 @@ class SignMessageUseCase @Inject constructor() {
                 },
                 onError = { error: Sign.Model.Error ->
                     Timber.e("WalletConnect SignClient.request error $error")
-                    trySend(SignStatus.Error(error.toString()))
+                    trySend(
+                        SignStatus.Error(
+                            "Could not sign message. Please try again. [SignClient.request]",
+                            error.throwable
+                        )
+                    )
                 }
             )
             awaitClose()

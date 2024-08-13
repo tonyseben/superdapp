@@ -41,7 +41,12 @@ class ConnectWalletUseCase @Inject constructor() {
             },
             onError = { error ->
                 Timber.d("WalletConnect SignClient.connect error: $error")
-                trySend(ConnectStatus.Error(error.toString()))
+                trySend(
+                    ConnectStatus.Error(
+                        message = "Could not connect to wallet. Please try again. [SignClient.connect]",
+                        throwable = error.throwable
+                    )
+                )
             }
         )
 

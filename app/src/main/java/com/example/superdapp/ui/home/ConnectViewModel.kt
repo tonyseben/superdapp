@@ -44,8 +44,7 @@ class ConnectViewModel @Inject constructor(
                     signStatus = SignStatus.Signed
                 )
             }
-        } ?:
-        setState { copy(pairing = createPairing()) }
+        } ?: setState { copy(pairing = createPairing()) }
 
         signClientDelegate().collect { it ->
             when (it) {
@@ -83,48 +82,78 @@ class ConnectViewModel @Inject constructor(
     }
 
     private fun onConnectWalletClick() = viewModelScope.launch {
-        state.value.pairing?.let {
-            connectWallet(it).collect {
-                setState { copy(connectStatus = it) }
-                if (it is ConnectStatus.ConnectRequested) {
-                    setState { copy(pairingUrl = it.pairingUrl) }
+        state.value.pairing?.let { pairing ->
+
+            connectWallet(pairing).collect { status ->
+                setState { copy(connectStatus = status) }
+                when (status) {
+                    is ConnectStatus.ConnectRequested -> setState { copy(pairingUrl = status.pairingUrl) }
+                    is ConnectStatus.Error -> handleError(status.message, status.throwable)
+                    else -> {}
                 }
             }
         }
     }
 
     private fun onSignMessageClick() = viewModelScope.launch {
-        val account = state.value.accounts.firstOrNull() ?: return@launch
-        val topic = state.value.sessionTopic ?: return@launch
+        val account = state.value.accounts.firstOrNull() ?: run {
+            handleError("Could not sign message. No account found!", null)
+            return@launch
+        }
+        val topic = state.value.sessionTopic ?: run {
+            handleError("Could not sign message. No session topic found!", null)
+            return@launch
+        }
 
-        signMessage(account, topic).collect {
-            setState { copy(signStatus = it) }
+        signMessage(account, topic).collect { status ->
+            when (status) {
+                is SignStatus.Error -> handleError(status.message, status.throwable)
+                else -> setState { copy(signStatus = status) }
+            }
         }
     }
 
     private fun onDisconnectWalletClick() = viewModelScope.launch {
-        val topic = state.value.sessionTopic ?: return@launch
+        val topic = state.value.sessionTopic ?: run {
+            handleError("Could not disconnect wallet. No session topic found!", null)
+            return@launch
+        }
 
-        disconnectWallet(topic).collect {
-            setState { copy(disConnectStatus = it) }
-            clearSessionLocal()
+        disconnectWallet(topic).collect { status ->
+            when (status) {
+                DisconnectStatus.Default -> setState { copy(disConnectStatus = status) }
+                DisconnectStatus.Disconnected -> {
+                    setState { copy(disConnectStatus = status) }
+                    clearSessionLocal()
 
-            if (it is DisconnectStatus.Disconnected) {
-                delay(1000)
-                setState {
-                    copy(
-                        pairing = null,
-                        pairingUrl = null,
-                        connectedWallet = null,
-                        sessionTopic = null,
-                        accounts = emptyList(),
-                        connectStatus = ConnectStatus.Default,
-                        signStatus = SignStatus.Default,
-                        disConnectStatus = DisconnectStatus.Default
-                    )
+                    delay(1000)
+                    setState {
+                        copy(
+                            pairing = null,
+                            pairingUrl = null,
+                            connectedWallet = null,
+                            sessionTopic = null,
+                            accounts = emptyList(),
+                            connectStatus = ConnectStatus.Default,
+                            signStatus = SignStatus.Default,
+                            disConnectStatus = DisconnectStatus.Default
+                        )
+                    }
+                    init()
                 }
-                init()
+
+                is DisconnectStatus.Error -> handleError(status.message, status.throwable)
             }
         }
+    }
+
+    private fun handleError(message: String?, throwable: Throwable?) {
+        throwable?.printStackTrace()
+        applySideEffect(
+            ConnectContract.SideEffect.ShowError(
+                message
+                    ?: "Something went wrong. Please try again."
+            )
+        )
     }
 }

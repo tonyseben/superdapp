@@ -23,7 +23,12 @@ class DisconnectWalletUseCase @Inject constructor() {
             },
             onError = { error ->
                 Timber.d("WalletConnect SignClient.disconnect error: $error")
-                trySend(DisconnectStatus.Error(error.toString()))
+                trySend(
+                    DisconnectStatus.Error(
+                        "Could not disconnect wallet. Please try again. [SignClient.disconnect]",
+                        error.throwable
+                    )
+                )
             }
         )
         awaitClose()
