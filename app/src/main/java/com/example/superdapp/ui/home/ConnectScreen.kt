@@ -21,7 +21,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +42,7 @@ import com.example.superdapp.domain.walletconnect.DisconnectStatus
 import com.example.superdapp.domain.walletconnect.SignStatus
 import com.example.superdapp.ui.utils.NetworkUtils
 import com.lightspark.composeqr.QrCodeView
+import kotlinx.coroutines.delay
 
 @Composable
 fun ConnectScreen(
@@ -48,9 +52,19 @@ fun ConnectScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
 
     LaunchedEffect(Unit) {
         viewModel.init()
+        viewModel.effect.collect {
+            if (it is ConnectContract.SideEffect.ShowError) {
+                errorMessage = it.error
+                delay(5000)
+                errorMessage = ""
+            }
+        }
     }
 
     val (tabSelected, setTabSelected) = remember {
@@ -223,6 +237,15 @@ fun ConnectScreen(
                 text = accounts,
                 color = Color.White,
                 fontSize = 14.sp
+            )
+        }
+
+        if (errorMessage.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = errorMessage,
+                color = Color(0xFFFF4848),
+                textAlign = TextAlign.Center
             )
         }
     }

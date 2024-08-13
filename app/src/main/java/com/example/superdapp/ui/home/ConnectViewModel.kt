@@ -62,7 +62,10 @@ class ConnectViewModel @Inject constructor(
                     }
                 }
 
-                is SessionStatus.OnReject -> reset()
+                is SessionStatus.OnReject -> {
+                    handleError("Connect wallet failed. ${it.rejectedSession.reason}")
+                    reset()
+                }
 
                 is SessionStatus.OnSessionRequestResponse -> {
                     when (it.response.result) {
