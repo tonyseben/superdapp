@@ -31,7 +31,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun clearSession() {
         dataStore.edit { preferences ->
-            preferences[SESSION_TOPIC_KEY] = ""
+            preferences[SESSION_TOPIC_KEY] = "SESSION_TOPIC_KEY"
         }
     }
 }

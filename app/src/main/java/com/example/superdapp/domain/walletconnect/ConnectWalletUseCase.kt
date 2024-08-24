@@ -14,7 +14,7 @@ class ConnectWalletUseCase @Inject constructor() {
     operator fun invoke(pairing: Core.Model.Pairing): Flow<ConnectStatus> = callbackFlow {
         trySend(ConnectStatus.Connecting)
 
-        val chains = listOf("eip155:1", "eip155:137")
+        val chains = listOf("eip155:1"/*, "eip155:137"*/)
         val methods = listOf(
             "eth_sendTransaction",
             "eth_signTransaction",

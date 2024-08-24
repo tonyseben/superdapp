@@ -1,7 +1,9 @@
 package com.example.superdapp.ui.home
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -155,8 +157,16 @@ fun ConnectScreen(
                         }
 
                         1 -> {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.pairingUrl))
-                            context.startActivity(intent)
+                            try {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(state.pairingUrl))
+                                context.startActivity(intent)
+                            } catch (e: ActivityNotFoundException) {
+                                Toast.makeText(
+                                    context,
+                                    "No wallets found on your device.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 }
@@ -199,7 +209,7 @@ fun ConnectScreen(
                     Icon(
                         painter = painterResource(R.drawable.ic_cancel),
                         contentDescription = "Cancel",
-                        tint = Color.Blue,
+                        tint = Color.White,
                         modifier = Modifier.size(32.dp)
                     )
                 }
